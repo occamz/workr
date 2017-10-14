@@ -1,0 +1,35 @@
+postgres:
+  restart: always
+  image: postgres:latest
+  ports:
+  - "5432:5432"
+  volumes:
+  - "/db_data:/var/lib/postgresql/data"
+  env_file: .env
+
+web:
+  restart: always
+  build: ./web
+  expose:
+    - "8000"
+  links:
+    - postgres:postgres
+  volumes:
+   - ./web:/usr/src/app
+   - ./web/static:/usr/src/app/static
+  env_file: .env
+  environment:
+    DEBUG: 'true'
+  command: python manage.py runserver 0.0.0.0:8000
+
+nginx:
+  restart: always
+  build: ./nginx/
+  ports:
+    - "80:80"
+  volumes:
+    - /www/static
+  volumes_from:
+    - web
+  links:
+    - web
