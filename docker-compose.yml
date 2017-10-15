@@ -1,35 +1,39 @@
-postgres:
-  restart: always
-  image: postgres:latest
-  ports:
-  - "5432:5432"
-  volumes:
-  - "/db_data:/var/lib/postgresql/data"
-  env_file: .env
+version: '2'
+services:
+  postgres:
+    restart: always
+    image: postgres:latest
+    ports:
+    - "5432:5432"
+    volumes:
+    - "/db_data:/var/lib/postgresql/data"
+    env_file: .env
 
-web:
-  restart: always
-  build: ./web
-  expose:
-    - "8000"
-  links:
-    - postgres:postgres
-  volumes:
-   - ./web:/usr/src/app
-   - ./web/static:/usr/src/app/static
-  env_file: .env
-  environment:
-    DEBUG: 'true'
-  command: python manage.py runserver 0.0.0.0:8000
+  web:
+    restart: always
+    build: ./web
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+    links:
+      - postgres
+    volumes:
+     - ./web:/usr/src/app
+     - ./web/static:/usr/src/app/static
+    env_file: .env
+    environment:
+      DEBUG: 'true'
+    command: gunicorn workr.wsgi -b 0.0.0.0:8000 --reload
 
-nginx:
-  restart: always
-  build: ./nginx/
-  ports:
-    - "80:80"
-  volumes:
-    - /www/static
-  volumes_from:
-    - web
-  links:
-    - web
+  nginx:
+    restart: always
+    build: ./nginx/
+    ports:
+      - "80:80"
+    volumes_from:
+      - web
+    links:
+      - web
+    depends_on:
+      - web
