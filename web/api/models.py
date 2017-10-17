@@ -45,9 +45,14 @@ class Organization(models.Model):
 
     name = models.CharField(max_length=100, blank=True, default="")
 
+    def __str__(self):
+        return self.name
 
 class Tag(models.Model):
     title = models.CharField(max_length=50, blank=True, default="")
+
+    def __str__(self):
+        return self.title
 
 # Task / job / role
 class Task(models.Model):
@@ -59,3 +64,6 @@ class Task(models.Model):
     title = models.CharField(max_length=100, blank=True, default="")
     tags = models.ManyToManyField(Tag)
     description = models.TextField()
+
+    def __str__(self):
+        return "{} - {}".format(self.organization.name, self.title)

@@ -16,9 +16,18 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework.routers import DefaultRouter
+
+from api import views as api
+from client import views as client
+
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api-token-auth/', obtain_jwt_token),
+    url(r"^admin/", admin.site.urls),
+    url(r"^api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    url(r"^api-token-auth/", obtain_jwt_token),
+
+    url(r'^api/task/(?P<id>[0-9]+)/$', api.TaskDetail.as_view(), name="venue_detail"),
+
+    url(r"^task/(?P<id>[0-9]+)/$", client.task_detail),
 ]
