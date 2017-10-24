@@ -7,11 +7,14 @@ from django.contrib import admin
 
 from .models import *
 
+
 class OrganizationAdmin(admin.ModelAdmin):
     pass
 
+
 class TaskAdmin(admin.ModelAdmin):
     pass
+
 
 class TagAdmin(admin.ModelAdmin):
     pass

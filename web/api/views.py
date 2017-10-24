@@ -22,13 +22,14 @@ from .models import *
 #    serializer_class = UserSerializer
 
 
-class OrganziationSerializer(serializers.ModelSerializer):
+class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
         fields = ("id", "name")
 
+
 class TaskSerializer(serializers.ModelSerializer):
-    organization = OrganziationSerializer(read_only=True)
+    organization = OrganizationSerializer(read_only=True)
     tags = serializers.SlugRelatedField(
         many=True,
         read_only=True,
@@ -38,6 +39,7 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ("title", "description", "organization", "tags")
+
 
 class TaskDetail(APIView):
     """
